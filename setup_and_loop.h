@@ -3,8 +3,7 @@
 
 #include <FastLED.h>
 #include "definitions.h"
-#include "LightStyle.h"
-#include "Song.h"
+// #include "Song.h"
 
 void my_setup();
 void my_loop();

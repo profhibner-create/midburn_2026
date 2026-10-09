@@ -1,14 +1,29 @@
 #ifndef DEFINITIONS_H
 #define DEFINITIONS_H
 
-#include <FastLED.h> // Needed so this file understands what "CRGB" is
+#include <FastLED.h>
 
-// Constants and Macros can live entirely in the header
-#define LED_PIN     6         
-#define NUM_LEDS    100        
-#define BRIGHTNESS  150       
+// Pins for LED strips
+#define PIN_TOP       5
+#define PIN_STRIP_A   6
+#define PIN_STRIP_B   7
+#define PIN_STRIP_C   8
+#define PIN_STRIP_D   9
 
-// "extern" tells other files: "This array exists, but its memory is allocated in the .cpp file"
-extern CRGB leds[NUM_LEDS];          
-extern const int builting_led;     
+// Pins for DY-HV20T Audio Module
+#define AUDIO_RX_PIN  10  // Connects to DY-HV20T TX
+#define AUDIO_TX_PIN  11  // Connects to DY-HV20T RX
+
+// LED counts for each strip
+#define NUM_LEDS_TOP      168  
+#define NUM_LEDS_SHORT    26   
+#define BRIGHTNESS        150       
+
+extern CRGB ledsTop[NUM_LEDS_TOP];          
+extern CRGB ledsA[NUM_LEDS_SHORT];          
+extern CRGB ledsB[NUM_LEDS_SHORT];          
+extern CRGB ledsC[NUM_LEDS_SHORT];          
+extern CRGB ledsD[NUM_LEDS_SHORT];          
+
+extern const int builtin_led;     
 #endif
