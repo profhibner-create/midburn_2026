@@ -18,13 +18,8 @@ void my_setup() {
   audioSerial.begin(9600); 
   player.begin();
   delay(600); // Give the module plenty of time to wake up safely
-
   Serial.println(F("Setting master playback volume to 10..."));
-  player.setVolume(10);    
   delay(150);              
-
-  // Force play command for 0001.mp3 (Track Index 1)
-  Serial.println(F("CRITICAL: Sending command to play '00001.mp3'..."));
   player.playSpecified(1);     
   delay(150);
 

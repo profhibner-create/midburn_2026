@@ -11,8 +11,8 @@
 #define PIN_STRIP_D   9
 
 // Pins for DY-HV20T Audio Module
-#define AUDIO_RX_PIN  10  
-#define AUDIO_TX_PIN  11  
+#define AUDIO_RX_PIN  2  
+#define AUDIO_TX_PIN  3  
 
 // PHYSICAL LED counts (Safe full sizes)
 #define NUM_LEDS_TOP      168  
