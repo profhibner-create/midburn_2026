@@ -20,11 +20,20 @@ void my_setup() {
   player.setVolume(25);    
   delay(150);              
 
-  // FIXED: Cleared namespaces to match SnijderC's official header exactly
+  // CRUCIAL STEP: Force the internal memory pointer to mount your SD Card partition
+  Serial.println(F("Mounting active SD card filesystem..."));
+  player.setPlayingDevice(DY::Device::Sd);
+  delay(150);
+
+  // Configure the background chip memory to repeat a single track forever
+  Serial.println(F("Setting loop playback mode to RepeatOne..."));
   player.setCycleMode(DY::PlayMode::RepeatOne); 
   delay(150);              
 
-  player.playSpecified(1);     
+  // Start background playback engine using standard play()
+  // Because the device is mounted and RepeatOne is active, track 00001.mp3 loops infinitely!
+  Serial.println(F("Starting background audio playback on a loop..."));
+  player.play();     
   delay(150);
 
   // 2. Initialize the two unequal physical strings
@@ -41,15 +50,19 @@ void my_loop() {
   uint8_t dynamicBrightness = beatsin8(30, 10, MAX_BRIGHTNESS);
   FastLED.setBrightness(dynamicBrightness);
 
-  // Fill the long strip with Solid Red
+  // Fill the long strip with Pure White
   for (int i = 0; i < NUM_LEDS_LONG; i++) {
-    ledsLong[i] = CRGB::Red;
+    ledsLong[i] = CRGB::White;
   }
 
-  // Fill the short strip with Solid Blue
+  // Fill the short strip with Pure White
   for (int i = 0; i < NUM_LEDS_SHORT; i++) {
-    ledsShort[i] = CRGB::Blue;
+    ledsShort[i] = CRGB::White;
   }
 
+  if (digitalRead(PIN_BUTTON) == HIGH) { 
+    Serial.println(F("\n[!] ARCADE BUTTON OVERRIDE DETECTED: INTERRUPTING SYSTEM..."));
+  }
+  
   FastLED.show();
 }
