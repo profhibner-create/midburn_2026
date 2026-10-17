@@ -4,66 +4,52 @@
 #include <DYPlayerArduino.h> 
 #include "definitions.h"  
 
-CRGB change_color(int i); 
-
 SoftwareSerial audioSerial(AUDIO_RX_PIN, AUDIO_TX_PIN);
-DY::Player player(&audioSerial); // Correct library initialization pattern
+DY::Player player(&audioSerial); 
 
 void my_setup() {
   Serial.begin(115200);
   while (!Serial) { ; } 
-  Serial.println(F("\n====== FORCED AUDIO DIAGNOSTIC ENGINE ======"));
+  Serial.println(F("\n====== TWO STRIP SINEWAVE ENGINE ======"));
 
-  // Initialize Software Serial bus for the audio module
+  // 1. Initialize Audio module
   audioSerial.begin(9600); 
   player.begin();
-  delay(600); // Give the module plenty of time to wake up safely
-  Serial.println(F("Setting master playback volume to 10..."));
+  delay(600); 
+
+  player.setVolume(25);    
   delay(150);              
+
+  // FIXED: Cleared namespaces to match SnijderC's official header exactly
+  player.setCycleMode(DY::PlayMode::RepeatOne); 
+  delay(150);              
+
   player.playSpecified(1);     
   delay(150);
 
-  Serial.println(F("Diagnostic phase finished. Initializing FastLED strips..."));
-
-  // Initialize your FastLED hardware strings using full dimensions
-  FastLED.addLeds<WS2815, PIN_TOP,       GRB>(ledsTop, NUM_LEDS_TOP);
+  // 2. Initialize the two unequal physical strings
+  FastLED.addLeds<WS2815, PIN_STRIP_LONG,  GRB>(ledsLong,  NUM_LEDS_LONG);
+  FastLED.addLeds<WS2815, PIN_STRIP_SHORT, GRB>(ledsShort, NUM_LEDS_SHORT);
   
-  // All 4 hardware data pins share the single ledsShort memory profile simultaneously
-  FastLED.addLeds<WS2815, PIN_STRIP_A,   GRB>(ledsShort, NUM_LEDS_SHORT);
-  FastLED.addLeds<WS2815, PIN_STRIP_B,   GRB>(ledsShort, NUM_LEDS_SHORT);
-  FastLED.addLeds<WS2815, PIN_STRIP_C,   GRB>(ledsShort, NUM_LEDS_SHORT);
-  FastLED.addLeds<WS2815, PIN_STRIP_D,   GRB>(ledsShort, NUM_LEDS_SHORT);
-  
-  FastLED.setBrightness(BRIGHTNESS);
+  FastLED.setBrightness(MAX_BRIGHTNESS);
   FastLED.clear();
   FastLED.show();
 }
 
 void my_loop() {
-  static unsigned long lastLedFrame = 0;
-  static int currentPixel = 0;
+  // Calculates a perfect smooth sinewave cycle breathing 30 times a minute
+  uint8_t dynamicBrightness = beatsin8(30, 10, MAX_BRIGHTNESS);
+  FastLED.setBrightness(dynamicBrightness);
 
-  if (millis() - lastLedFrame >= 30) {
-    lastLedFrame = millis();
-    
-    // Clear display slate safely
-    FastLED.clear();
-    
-    // Animate the Top strip
-    ledsTop[currentPixel] = change_color(currentPixel);
-    
-    // Optional: Animate all short strips identically in sync
-    ledsShort[currentPixel % NUM_LEDS_SHORT] = change_color(currentPixel);
-    
-    FastLED.show();
-    
-    currentPixel++;
-    if (currentPixel >= NUM_LEDS_TOP) {
-      currentPixel = 0;
-    }
+  // Fill the long strip with Solid Red
+  for (int i = 0; i < NUM_LEDS_LONG; i++) {
+    ledsLong[i] = CRGB::Red;
   }
-}
 
-CRGB change_color(int i) {
-    return (i % 2 == 0) ? CRGB::Red : CRGB::Blue;
+  // Fill the short strip with Solid Blue
+  for (int i = 0; i < NUM_LEDS_SHORT; i++) {
+    ledsShort[i] = CRGB::Blue;
+  }
+
+  FastLED.show();
 }

@@ -4,20 +4,16 @@
 #include <FastLED.h>
 
 // Pins for LED strips
-#define PIN_TOP       5
-#define PIN_STRIP_A   6
-#define PIN_STRIP_B   7
-#define PIN_STRIP_C   8
-#define PIN_STRIP_D   9
+#define PIN_STRIP_LONG    5  
+#define PIN_STRIP_SHORT   6  
 
-// Pins for DY-HV20T Audio Module
+// Pins for DY-HV20T Audio Module (Optimal pins 2 and 3)
 #define AUDIO_RX_PIN  2  
 #define AUDIO_TX_PIN  3  
 
-// PHYSICAL LED counts (Safe full sizes)
-#define NUM_LEDS_TOP      168  
+#define NUM_LEDS_LONG     194  
 #define NUM_LEDS_SHORT    26   
-#define BRIGHTNESS        150       
+#define MAX_BRIGHTNESS    150       
 
 struct LoopProfile {
   uint16_t trackNumber; 
@@ -26,12 +22,13 @@ struct LoopProfile {
   uint32_t endMs;       
 };
 
-// Share safe array references across your project files
-extern CRGB ledsTop[NUM_LEDS_TOP];          
-extern CRGB ledsShort[NUM_LEDS_SHORT]; // Shared memory for strips A, B, C, D          
+extern CRGB ledsLong[NUM_LEDS_LONG];          
+extern CRGB ledsShort[NUM_LEDS_SHORT];          
 
 extern const int builtin_led;     
 extern bool play;
+
+// FIXED: Defined clearly as an explicit 8-profile matrix structure
 extern const LoopProfile playlist[8]; 
 
 #endif
