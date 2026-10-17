@@ -20,6 +20,7 @@
 
 struct LoopProfile {
   uint16_t trackNumber; 
+  uint16_t seconds;
   uint16_t targetRpm;   
   uint32_t startMs;     
   uint32_t endMs;       
