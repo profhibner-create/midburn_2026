@@ -10,9 +10,12 @@ DY::Player player(&audioSerial);
 void my_setup() {
   Serial.begin(115200);
   while (!Serial) { ; } 
-  Serial.println(F("\n====== TWO STRIP SINEWAVE ENGINE ======"));
+  Serial.println(F("\n====== 4-LEG TACTILE BUTTON ENGINE ======"));
 
-  // 1. Initialize Audio module
+  // Enable the internal pullup to hold Pin 12 steadily at HIGH (1) until pressed
+  pinMode(PIN_BUTTON, INPUT_PULLUP);
+
+  // Initialize Audio module over working Pins 2 and 3
   audioSerial.begin(9600); 
   player.begin();
   delay(600); 
@@ -20,23 +23,19 @@ void my_setup() {
   player.setVolume(25);    
   delay(150);              
 
-  // CRUCIAL STEP: Force the internal memory pointer to mount your SD Card partition
   Serial.println(F("Mounting active SD card filesystem..."));
   player.setPlayingDevice(DY::Device::Sd);
   delay(150);
 
-  // Configure the background chip memory to repeat a single track forever
   Serial.println(F("Setting loop playback mode to RepeatOne..."));
   player.setCycleMode(DY::PlayMode::RepeatOne); 
   delay(150);              
 
-  // Start background playback engine using standard play()
-  // Because the device is mounted and RepeatOne is active, track 00001.mp3 loops infinitely!
   Serial.println(F("Starting background audio playback on a loop..."));
   player.play();     
   delay(150);
 
-  // 2. Initialize the two unequal physical strings
+  // Initialize the two unequal physical strings
   FastLED.addLeds<WS2815, PIN_STRIP_LONG,  GRB>(ledsLong,  NUM_LEDS_LONG);
   FastLED.addLeds<WS2815, PIN_STRIP_SHORT, GRB>(ledsShort, NUM_LEDS_SHORT);
   
@@ -50,19 +49,33 @@ void my_loop() {
   uint8_t dynamicBrightness = beatsin8(30, 10, MAX_BRIGHTNESS);
   FastLED.setBrightness(dynamicBrightness);
 
-  // Fill the long strip with Pure White
+  // Fill both strips with Pure White
   for (int i = 0; i < NUM_LEDS_LONG; i++) {
     ledsLong[i] = CRGB::White;
   }
-
-  // Fill the short strip with Pure White
   for (int i = 0; i < NUM_LEDS_SHORT; i++) {
     ledsShort[i] = CRGB::White;
   }
 
-  if (digitalRead(PIN_BUTTON) == HIGH) { 
-    Serial.println(F("\n[!] ARCADE BUTTON OVERRIDE DETECTED: INTERRUPTING SYSTEM..."));
+  // --- STABLE TACTILE EDGE LATCH ENGINE ---
+  static bool lastButtonState = HIGH; 
+  bool currentButtonState = digitalRead(PIN_BUTTON);
+
+  // Trigger ONLY on the exact frame the button connects to GND (LOW)
+  if (lastButtonState == HIGH && currentButtonState == LOW) {
+    delay(25); // Debounce filter to ignore mechanical button vibration noise
+    if (digitalRead(PIN_BUTTON) == LOW) { 
+      Serial.println(F("\n[!] BUTTON PRESSED: INTERRUPTING SYSTEM..."));
+      
+      // Hold execution here until you release the button (returns back to HIGH)
+      while(digitalRead(PIN_BUTTON) == LOW) { 
+        delay(1); 
+      }
+    }
   }
   
+  // Track state changes safely across execution passes
+  lastButtonState = currentButtonState;
+
   FastLED.show();
 }
