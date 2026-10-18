@@ -1,4 +1,5 @@
 #include "ShowController.h"
+#include "Config.h"
 #include "Playlist.h"
 
 void ShowController::begin() {
@@ -6,7 +7,7 @@ void ShowController::begin() {
 }
 
 void ShowController::startIdle() {
-  playing_ = false;
+  state_ = State::Idle;
   track_ = &playlist::idle();
   motor_.stop();
   audio_.play(*track_);
@@ -14,7 +15,7 @@ void ShowController::startIdle() {
 }
 
 void ShowController::startShow(uint32_t now) {
-  playing_ = true;
+  state_ = State::Playing;
   track_ = &playlist::pickRandomShow();
   trackStartMs_ = now;
   audio_.play(*track_);
@@ -34,26 +35,43 @@ Phase ShowController::phaseAt(uint32_t elapsedMs) const {
   return Phase::Outro;
 }
 
+void ShowController::startSilence(uint32_t now) {
+  state_ = State::Silence;
+  silenceStartMs_ = now;
+  audio_.stop();
+  motor_.stop();
+  Serial.println(F("[show] silence"));
+}
+
 void ShowController::update(uint32_t now) {
   button_.update(now);
   bool pressed = button_.wasPressed();  // always consume, so presses mid-show don't queue up
 
-  if (!playing_ && pressed) {
-    startShow(now);
-  } else if (playing_ && now - trackStartMs_ >= track_->durationMs) {
-    Serial.print(F("[show] finished: clock counted "));
-    Serial.print(now - trackStartMs_);
-    Serial.println(F(" ms since the press"));
-    startIdle();
+  switch (state_) {
+    case State::Idle:
+      if (pressed) startShow(now);
+      break;
+    case State::Playing:
+      if (now - trackStartMs_ >= track_->durationMs) {
+        Serial.print(F("[show] finished: clock counted "));
+        Serial.print(now - trackStartMs_);
+        Serial.println(F(" ms since the press"));
+        startSilence(now);
+      }
+      break;
+    case State::Silence:
+      if (now - silenceStartMs_ >= config::SHOW_END_SILENCE_MS) startIdle();
+      break;
   }
 
   ShowContext ctx = {Phase::Idle, 0, track_};
   Animation* animation = &breathing_;
-  if (playing_) {
+  if (state_ == State::Playing) {
     ctx.elapsedMs = now - trackStartMs_;
     ctx.phase = phaseAt(ctx.elapsedMs);
-    animation = (ctx.phase == Phase::Drop) ? static_cast<Animation*>(&dropEffect_)
-                                           : static_cast<Animation*>(&strobe_);
+    // The rise is the Drop phase; before and after it the triplet flicker runs.
+    animation = (ctx.phase == Phase::Drop) ? static_cast<Animation*>(&rise_)
+                                           : static_cast<Animation*>(&flicker_);
   }
 
   motor_.update(ctx);

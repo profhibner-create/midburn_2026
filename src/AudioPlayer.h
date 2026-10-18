@@ -9,6 +9,8 @@ class AudioPlayer {
  public:
   void begin();
   void play(const Track& track);
+  // Release the active trigger pin, which stops the music.
+  void stop();
 
  private:
   static const uint8_t NO_PIN = 0xFF;

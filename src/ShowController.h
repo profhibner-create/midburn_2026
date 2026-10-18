@@ -7,9 +7,11 @@
 #include "MotorController.h"
 #include "ShowContext.h"
 
-// Two states: Idle (looping track 1, white breathing) and Playing (random
-// show track). A button press in Idle starts a show; presses are ignored
-// until the track's duration has elapsed, then we return to Idle.
+// Three states:
+//   Idle    - looping track 1, white breathing. A button press starts a show.
+//   Playing - random show track until its duration has elapsed.
+//   Silence - music off for SHOW_END_SILENCE_MS, then back to Idle.
+// Button presses are ignored outside Idle.
 class ShowController {
  public:
   ShowController(Button& button, AudioPlayer& audio, LedDisplay& display, MotorController& motor)
@@ -20,6 +22,7 @@ class ShowController {
 
  private:
   void startIdle();
+  void startSilence(uint32_t now);
   void startShow(uint32_t now);
   Phase phaseAt(uint32_t elapsedMs) const;
 
@@ -29,10 +32,12 @@ class ShowController {
   MotorController& motor_;
 
   BreathingWhite breathing_;
-  TripletStrobe  strobe_;
-  DropEffect     dropEffect_;
+  TripletFlicker flicker_;
+  RiseStrobe     rise_;
 
-  bool         playing_ = false;
+  enum class State { Idle, Playing, Silence };
+  State        state_ = State::Idle;
   const Track* track_ = nullptr;
   uint32_t     trackStartMs_ = 0;
+  uint32_t     silenceStartMs_ = 0;
 };

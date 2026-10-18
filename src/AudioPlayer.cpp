@@ -24,3 +24,9 @@ void AudioPlayer::play(const Track& track) {
   pinMode(pin, OUTPUT);
   activePin_ = pin;
 }
+
+void AudioPlayer::stop() {
+  if (activePin_ == NO_PIN) return;
+  pinMode(activePin_, INPUT);
+  activePin_ = NO_PIN;
+}

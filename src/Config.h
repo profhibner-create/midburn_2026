@@ -26,12 +26,17 @@ constexpr uint8_t  PIN_BUTTON      = 12;
 constexpr uint16_t DEBOUNCE_MS     = 25;
 
 // Show timing
-// Strobe flashes per minute = bpm * STROBE_FLASHES_PER_BEAT (1 = one flash per beat)
+// Intro/outro flicker: steps per minute = bpm * STROBE_FLASHES_PER_BEAT
 constexpr uint8_t STROBE_FLASHES_PER_BEAT = 2;
-// Consecutive flashes before the colour pair flips (blue,red,blue -> red,blue,red)
-constexpr uint8_t STROBE_GROUP_SIZE  = 3;
+// LEDs per group that is switched on/off together (triplet 0 = LEDs 0-2, ...)
+constexpr uint8_t LEDS_PER_TRIPLET = 3;
+// White strobe during the rise: on/off cycles per minute = bpm * RISE_FLASHES_PER_BEAT
+constexpr uint8_t RISE_FLASHES_PER_BEAT = 2;
 // Motor RPM = bpm / MOTOR_BPM_DIVISOR (expected 2..4)
 constexpr uint8_t MOTOR_BPM_DIVISOR  = 4;
+
+// Silence between the end of a show and the idle music starting again
+constexpr uint16_t SHOW_END_SILENCE_MS = 1000;
 
 // Idle breathing
 constexpr uint8_t  IDLE_BREATH_BPM = 30;

@@ -17,13 +17,16 @@ class BreathingWhite : public Animation {
   void render(LedDisplay& display, const ShowContext& ctx) override;
 };
 
-// Show: blue/red flashes at bpm * STROBE_FLASHES_PER_BEAT per minute, in groups of three.
-class TripletStrobe : public Animation {
+// Before and after the rise: LEDs are grouped in triplets (0-2, 3-5, ...) per strip.
+// On every flick the even triplets light up in random colours while the odd ones are
+// off; on the next flick it is the other way round.
+class TripletFlicker : public Animation {
  public:
   void render(LedDisplay& display, const ShowContext& ctx) override;
 };
 
-// Placeholder for the special effect between drop start and drop end.
-class DropEffect : public TripletStrobe {
-  // TODO: design the drop effect; override render().
+// During the rise: all LEDs flash white, on/off at bpm * RISE_FLASHES_PER_BEAT cycles per minute.
+class RiseStrobe : public Animation {
+ public:
+  void render(LedDisplay& display, const ShowContext& ctx) override;
 };

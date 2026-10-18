@@ -2,6 +2,8 @@
 
 #include <FastLED.h>
 
+enum class Strip : uint8_t { Long, Short };
+
 // Owns the two unequal strips and hides the split from animations.
 class LedDisplay {
  public:
@@ -11,6 +13,9 @@ class LedDisplay {
   void fill(const CRGB& longColor, const CRGB& shortColor);
   void fill(const CRGB& color) { fill(color, color); }
   void show() { FastLED.show(); }
+
+  uint16_t numLeds(Strip strip) const;
+  void setLed(Strip strip, uint16_t index, const CRGB& color);
 
  private:
   CRGB longLeds_[194];
