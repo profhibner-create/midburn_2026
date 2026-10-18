@@ -6,7 +6,7 @@
 #include "src/ShowController.h"
 
 Button          button(config::PIN_BUTTON, config::DEBOUNCE_MS);
-AudioPlayer     audio(config::PIN_AUDIO_RX, config::PIN_AUDIO_TX);
+AudioPlayer     audio;
 LedDisplay      display;
 MotorController motor;
 ShowController  show(button, audio, display, motor);
@@ -18,7 +18,7 @@ void setup() {
   button.begin();
   display.begin();
   motor.begin();
-  audio.begin(config::AUDIO_VOLUME);
+  audio.begin();
   show.begin();
 }
 

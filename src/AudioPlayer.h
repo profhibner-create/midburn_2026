@@ -1,19 +1,16 @@
 #pragma once
 
-#include <SoftwareSerial.h>
-#include <DYPlayerArduino.h>
+#include <Arduino.h>
 
 #include "Track.h"
 
-// Thin wrapper around the DY-HV20T module.
+// Plays tracks on the DY-HV20T by pulling its trigger pins low.
 class AudioPlayer {
  public:
-  AudioPlayer(uint8_t rxPin, uint8_t txPin) : serial_(rxPin, txPin), player_(&serial_) {}
-
-  void begin(uint8_t volume);
+  void begin();
   void play(const Track& track);
 
  private:
-  SoftwareSerial serial_;
-  DY::Player     player_;
+  static const uint8_t NO_PIN = 0xFF;
+  uint8_t activePin_ = NO_PIN;
 };

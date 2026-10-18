@@ -2,7 +2,8 @@
 
 #include <Arduino.h>
 
-// One audio file on the SD card, named 0000<number>.mp3.
+// One audio file on the SD card, named 0000<number>.mp3. It is played by pulling
+// module IO(number-1) low, i.e. TRIGGER_PINS[number-1].
 struct Track {
   uint8_t  number;
   uint16_t bpm;

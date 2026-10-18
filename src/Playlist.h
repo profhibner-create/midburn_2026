@@ -7,7 +7,7 @@ namespace playlist {
 // Track 1: looping idle music.
 const Track& idle();
 
-// A random show track (00002..00008).
+// A random show track (00002..00005).
 const Track& pickRandomShow();
 
 }  // namespace playlist
