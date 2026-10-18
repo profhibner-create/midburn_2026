@@ -1,26 +1,27 @@
-#include <FastLED.h>
-#include "definitions.h"
-#include "setup_and_loop.h"
+#include "src/Config.h"
+#include "src/AudioPlayer.h"
+#include "src/Button.h"
+#include "src/LedDisplay.h"
+#include "src/MotorController.h"
+#include "src/ShowController.h"
 
-// Non-blocking timer variables for the built-in LED
-unsigned long lastBlinkTime = 0;
-const int period = 100; 
-bool ledState = LOW;
+Button          button(config::PIN_BUTTON, config::DEBOUNCE_MS);
+AudioPlayer     audio(config::PIN_AUDIO_RX, config::PIN_AUDIO_TX);
+LedDisplay      display;
+MotorController motor;
+ShowController  show(button, audio, display, motor);
 
 void setup() {
-  my_setup();
-  pinMode(LED_BUILTIN, OUTPUT);     
+  Serial.begin(115200);
+  randomSeed(analogRead(A0));
+
+  button.begin();
+  display.begin();
+  motor.begin();
+  audio.begin(config::AUDIO_VOLUME);
+  show.begin();
 }
 
 void loop() {
-  // 1. Non-blocking LED blink (replaces blocking delays)
-  unsigned long currentTime = millis();
-  if (currentTime - lastBlinkTime >= period) {
-    lastBlinkTime = currentTime;
-    ledState = !ledState;
-    digitalWrite(LED_BUILTIN, ledState);
-  }
-
-  // 2. Continuous processor engine for audio & FastLED
-  my_loop();
+  show.update(millis());
 }
