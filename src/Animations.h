@@ -17,7 +17,7 @@ class BreathingWhite : public Animation {
   void render(LedDisplay& display, const ShowContext& ctx) override;
 };
 
-// Show: blue/red flashes at bpm/STROBE_BPM_DIVISOR per second, in groups of three.
+// Show: blue/red flashes at bpm * STROBE_FLASHES_PER_BEAT per minute, in groups of three.
 class TripletStrobe : public Animation {
  public:
   void render(LedDisplay& display, const ShowContext& ctx) override;

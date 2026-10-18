@@ -26,8 +26,8 @@ constexpr uint8_t  PIN_BUTTON      = 12;
 constexpr uint16_t DEBOUNCE_MS     = 25;
 
 // Show timing
-// Strobe flashes per second = bpm / STROBE_BPM_DIVISOR
-constexpr uint8_t STROBE_BPM_DIVISOR = 4;
+// Strobe flashes per minute = bpm * STROBE_FLASHES_PER_BEAT (1 = one flash per beat)
+constexpr uint8_t STROBE_FLASHES_PER_BEAT = 2;
 // Consecutive flashes before the colour pair flips (blue,red,blue -> red,blue,red)
 constexpr uint8_t STROBE_GROUP_SIZE  = 3;
 // Motor RPM = bpm / MOTOR_BPM_DIVISOR (expected 2..4)

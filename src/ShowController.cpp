@@ -19,6 +19,8 @@ void ShowController::startShow(uint32_t now) {
   trackStartMs_ = now;
   audio_.play(*track_);
   motor_.startShow(*track_);
+  Serial.print(F("[show] button pressed, clock="));
+  Serial.println(now);
   Serial.print(F("[show] playing track "));
   Serial.print(track_->number);
   Serial.print(F(", "));
@@ -39,6 +41,9 @@ void ShowController::update(uint32_t now) {
   if (!playing_ && pressed) {
     startShow(now);
   } else if (playing_ && now - trackStartMs_ >= track_->durationMs) {
+    Serial.print(F("[show] finished: clock counted "));
+    Serial.print(now - trackStartMs_);
+    Serial.println(F(" ms since the press"));
     startIdle();
   }
 

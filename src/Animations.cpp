@@ -8,8 +8,8 @@ void BreathingWhite::render(LedDisplay& display, const ShowContext&) {
 }
 
 void TripletStrobe::render(LedDisplay& display, const ShowContext& ctx) {
-  // flashes/s = bpm / divisor  ->  flash index = elapsedMs * bpm / (divisor * 1000)
-  uint32_t flash = ctx.elapsedMs * ctx.track->bpm / (config::STROBE_BPM_DIVISOR * 1000UL);
+  // flashes/min = bpm * flashesPerBeat  ->  flash index = elapsedMs * bpm * perBeat / 60000
+  uint32_t flash = ctx.elapsedMs * ctx.track->bpm * config::STROBE_FLASHES_PER_BEAT / 60000UL;
 
   bool oddFlash = flash & 1;
   bool flipped  = (flash / config::STROBE_GROUP_SIZE) & 1;

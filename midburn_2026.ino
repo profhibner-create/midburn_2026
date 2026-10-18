@@ -1,6 +1,7 @@
 #include "src/Config.h"
 #include "src/AudioPlayer.h"
 #include "src/Button.h"
+#include "src/Clock.h"
 #include "src/LedDisplay.h"
 #include "src/MotorController.h"
 #include "src/ShowController.h"
@@ -13,6 +14,8 @@ ShowController  show(button, audio, display, motor);
 
 void setup() {
   Serial.begin(115200);
+  Serial.println(F("[boot]"));
+  showclock::begin();
   randomSeed(analogRead(A0));
 
   button.begin();
@@ -23,5 +26,5 @@ void setup() {
 }
 
 void loop() {
-  show.update(millis());
+  show.update(showclock::nowMs());
 }
