@@ -32,8 +32,17 @@ constexpr uint8_t STROBE_FLASHES_PER_BEAT = 2;
 constexpr uint8_t LEDS_PER_TRIPLET = 3;
 // White strobe during the rise: on/off cycles per minute = bpm * RISE_FLASHES_PER_BEAT
 constexpr uint8_t RISE_FLASHES_PER_BEAT = 2;
-// Motor RPM = bpm / MOTOR_BPM_DIVISOR (expected 2..4)
-constexpr uint8_t MOTOR_BPM_DIVISOR  = 4;
+
+// Motor: a PWM speed-controller board. Pin 3 replaces its speed potentiometer: it sends a
+// PWM signal to the board's 0-5V input (pot removed, Arduino GND joined to the board's GND,
+// the board's 5V pin left unconnected). The motor only runs during a show.
+constexpr uint8_t PIN_MOTOR_SPEED = 3;   // Timer2 PWM output (OC2B)
+// Voltage sent to the speed input, in millivolts (0 = stopped, 5000 = full speed).
+// Tune it by counting shaft turns; about 70 RPM is the target.
+constexpr uint16_t MOTOR_SPEED_MILLIVOLTS = 5000;   // full speed
+constexpr uint8_t  MOTOR_SPEED_DUTY =
+    static_cast<uint8_t>(static_cast<uint32_t>(MOTOR_SPEED_MILLIVOLTS) * 255 / 5000);
+constexpr uint8_t  STEPPER_MOTOR_RPM = 70;   // target, for reference only
 
 // Silence between the end of a show and the idle music starting again
 constexpr uint16_t SHOW_END_SILENCE_MS = 1000;

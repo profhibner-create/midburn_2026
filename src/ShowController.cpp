@@ -19,7 +19,7 @@ void ShowController::startShow(uint32_t now) {
   track_ = &playlist::pickRandomShow();
   trackStartMs_ = now;
   audio_.play(*track_);
-  motor_.startShow(*track_);
+  motor_.start();
   Serial.print(F("[show] button pressed, clock="));
   Serial.println(now);
   Serial.print(F("[show] playing track "));
@@ -74,7 +74,6 @@ void ShowController::update(uint32_t now) {
                                            : static_cast<Animation*>(&flicker_);
   }
 
-  motor_.update(ctx);
   animation->render(display_, ctx);
   display_.show();
 }

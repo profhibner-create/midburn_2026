@@ -1,13 +1,12 @@
 #pragma once
 
-#include "ShowContext.h"
+#include <Arduino.h>
 
-// Stepper motor, turning at bpm / MOTOR_BPM_DIVISOR RPM during a show.
-// Hardware (driver, pins, library) is not decided yet, so this is a stub.
+// Turns the motor on and off by sending a PWM voltage to its controller board's speed
+// input (see Config.h).
 class MotorController {
  public:
-  void begin() {}
-  void startShow(const Track& track);
-  void stop();
-  void update(const ShowContext& ctx);
+  void begin();
+  void start();  // send MOTOR_SPEED_MILLIVOLTS
+  void stop();   // 0 V
 };
