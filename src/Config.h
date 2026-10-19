@@ -7,9 +7,12 @@ namespace config {
 // LED strips
 constexpr uint8_t  PIN_STRIP_LONG   = 5;
 constexpr uint8_t  PIN_STRIP_SHORT  = 4;
-constexpr uint16_t NUM_LEDS_LONG    = 194;
+constexpr uint16_t NUM_LEDS_LONG    = 192;
 constexpr uint16_t NUM_LEDS_SHORT   = 26;
 constexpr uint8_t  MAX_BRIGHTNESS   = 150;
+// Accent lights: the last this-many LEDs of the long strip and the first this-many LEDs of the
+// short strip. They stay off except during the rise and the part after it.
+constexpr uint16_t ACCENT_LEDS_PER_STRIP = 12;
 
 // DY-HV20T audio module, driven in its I/O trigger mode (not UART).
 // Pulling module IOn low plays 0000(n+1).mp3. Entry i is the Arduino pin wired

@@ -75,5 +75,11 @@ void ShowController::update(uint32_t now) {
   }
 
   animation->render(display_, ctx);
+
+  // The accent lights are only on during the rise and after it, never at idle or in the intro.
+  bool accentOn = state_ == State::Playing &&
+                  (ctx.phase == Phase::Drop || ctx.phase == Phase::Outro);
+  if (!accentOn) display_.clearAccent();
+
   display_.show();
 }
