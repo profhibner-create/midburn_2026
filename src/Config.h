@@ -4,15 +4,18 @@
 
 namespace config {
 
-// LED strips
-constexpr uint8_t  PIN_STRIP_LONG   = 5;
 constexpr uint8_t  PIN_STRIP_SHORT  = 4;
-constexpr uint16_t NUM_LEDS_LONG    = 192;
-constexpr uint16_t NUM_LEDS_SHORT   = 26;
+constexpr uint8_t  PIN_STRIP_LONG   = 5;
+constexpr uint8_t  PIN_BUTTON      = 12;
+
+constexpr uint16_t NUM_LEDS_LONG    = 164;   // 4 strips of 41
+constexpr uint16_t NUM_LEDS_SHORT   = 24;
 constexpr uint8_t  MAX_BRIGHTNESS   = 150;
-// Accent lights: the last this-many LEDs of the long strip and the first this-many LEDs of the
-// short strip. They stay off except during the rise and the part after it.
-constexpr uint16_t ACCENT_LEDS_PER_STRIP = 12;
+
+// Short strip accent lights: its first this-many LEDs stay off except during the rise and the
+// part after it. The rest of the short strip and the whole long strip behave normally.
+// (Both short strips are wired together on the same data pin and show the same pixels.)
+constexpr uint16_t ACCENT_SHORT_LEDS = 12;
 
 // DY-HV20T audio module, driven in its I/O trigger mode (not UART).
 // Pulling module IOn low plays 0000(n+1).mp3. Entry i is the Arduino pin wired
@@ -25,7 +28,6 @@ constexpr uint16_t TRIGGER_GAP_MS = 50;
 constexpr uint16_t MODULE_BOOT_MS = 1500;
 
 // Trigger button (normally open, to GND)
-constexpr uint8_t  PIN_BUTTON      = 12;
 constexpr uint16_t DEBOUNCE_MS     = 25;
 
 // Show timing
@@ -36,16 +38,16 @@ constexpr uint8_t LEDS_PER_TRIPLET = 3;
 // White strobe during the rise: on/off cycles per minute = bpm * RISE_FLASHES_PER_BEAT
 constexpr uint8_t RISE_FLASHES_PER_BEAT = 2;
 
-// Motor: a PWM speed-controller board. Pin 3 replaces its speed potentiometer: it sends a
-// PWM signal to the board's 0-5V input (pot removed, Arduino GND joined to the board's GND,
-// the board's 5V pin left unconnected). The motor only runs during a show.
-constexpr uint8_t PIN_MOTOR_SPEED = 3;   // Timer2 PWM output (OC2B)
+// Motor: a PWM speed-controller board. Pin 3 replaces its speed potentiometer: it sends a PWM
+// signal to the board's 0-5V input (pot removed, Arduino GND joined to the board's GND, the
+// board's 5V pin left unconnected). Pin 3 must be used: it is Timer2's hardware PWM output.
+// The motor only runs during a show.
+constexpr uint8_t PIN_MOTOR_SPEED = 3;
 // Voltage sent to the speed input, in millivolts (0 = stopped, 5000 = full speed).
-// Tune it by counting shaft turns; about 70 RPM is the target.
-constexpr uint16_t MOTOR_SPEED_MILLIVOLTS = 5000;   // full speed
+// Tune it by watching or counting the motor's turns.
+constexpr uint16_t MOTOR_SPEED_MILLIVOLTS = 3000; // 5000 is 120 RPM.
 constexpr uint8_t  MOTOR_SPEED_DUTY =
     static_cast<uint8_t>(static_cast<uint32_t>(MOTOR_SPEED_MILLIVOLTS) * 255 / 5000);
-constexpr uint8_t  STEPPER_MOTOR_RPM = 70;   // target, for reference only
 
 // Silence between the end of a show and the idle music starting again
 constexpr uint16_t SHOW_END_SILENCE_MS = 1000;

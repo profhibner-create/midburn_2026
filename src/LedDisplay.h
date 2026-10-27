@@ -16,7 +16,7 @@ class LedDisplay {
   void fill(const CRGB& color) { fill(color, color); }
   void show() { FastLED.show(); }
 
-  // Turns the accent lights off (the last LEDs of the long strip, the first of the short one).
+  // Turns the short strip's accent lights off (its first ACCENT_SHORT_LEDS LEDs).
   void clearAccent();
 
   uint16_t numLeds(Strip strip) const;

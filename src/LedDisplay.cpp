@@ -24,7 +24,5 @@ void LedDisplay::setLed(Strip strip, uint16_t index, const CRGB& color) {
 }
 
 void LedDisplay::clearAccent() {
-  fill_solid(longLeds_ + config::NUM_LEDS_LONG - config::ACCENT_LEDS_PER_STRIP,
-             config::ACCENT_LEDS_PER_STRIP, CRGB::Black);
-  fill_solid(shortLeds_, config::ACCENT_LEDS_PER_STRIP, CRGB::Black);
+  fill_solid(shortLeds_, config::ACCENT_SHORT_LEDS, CRGB::Black);
 }
