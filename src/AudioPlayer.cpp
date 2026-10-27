@@ -14,7 +14,7 @@ void AudioPlayer::play(const Track& track) {
   if (track.number < 1 || track.number > config::NUM_TRIGGER_PINS) return;
 
   // Release the previous track first so two pins are never low at once.
-  if (activePin_ != NO_PIN) {
+  if (activePin_ != NO_ACTIVE_PIN) {
     pinMode(activePin_, INPUT);
     delay(config::TRIGGER_GAP_MS);
   }
@@ -26,7 +26,7 @@ void AudioPlayer::play(const Track& track) {
 }
 
 void AudioPlayer::stop() {
-  if (activePin_ == NO_PIN) return;
+  if (activePin_ == NO_ACTIVE_PIN) return;
   pinMode(activePin_, INPUT);
-  activePin_ = NO_PIN;
+  activePin_ = NO_ACTIVE_PIN;
 }

@@ -13,6 +13,6 @@ class AudioPlayer {
   void stop();
 
  private:
-  static const uint8_t NO_PIN = 0xFF;
-  uint8_t activePin_ = NO_PIN;
+  static const uint8_t NO_ACTIVE_PIN = 0xFF;
+  uint8_t activePin_ = NO_ACTIVE_PIN;
 };
